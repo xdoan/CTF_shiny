@@ -23,8 +23,8 @@ config = yaml::yaml.load_file("configuration.yaml")
 
 consortium_donut <- function(consortium_counts, key, key_label) {
   ctf_consortium_counts %>% 
-  select(label = consortium, value = key) %>% 
-    mutate(color = c("#999999","#E69F00", "#56B4E9", "#009E73" )) %>% 
+    select(label = consortium, value = key) %>% 
+    mutate(color = c("#999999","#E69F00", "#56B4E9", "#009E73" )) %>% # "#0072B2", "#D55E00", "#CC79A7") ) %>% 
     pier() %>% 
     pie.size(inner = 75, outer = 90, height = 100) %>% 
     pie.header(text = key_label, 
