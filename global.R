@@ -22,7 +22,7 @@ library(pier)
 config = yaml::yaml.load_file("configuration.yaml")
 
 consortium_donut <- function(consortium_counts, key, key_label) {
-  ntap_consortium_counts %>% 
+  ctf_consortium_counts %>% 
   select(label = consortium, value = key) %>% 
     mutate(color = c("#999999","#E69F00", "#56B4E9", "#009E73" )) %>% 
     pier() %>% 
