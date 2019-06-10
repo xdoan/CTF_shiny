@@ -18,7 +18,7 @@ shinyServer(function(input, output, session) {
     synLogin(sessionToken=input$cookie)
       
     withProgress(message = 'Loading data...',
-               {source("getDataCTF.R")})
+               {source("~/ShinyApps/CTF_shiny/getDataCTF.R")})
   
     output$centersBox <- renderInfoBox({
       centers <- n_distinct(ctf_center_study_summary_df$projectId)
