@@ -22,7 +22,7 @@ shinyUI(dashboardPage(
   dashboardBody(
     tags$head(
       singleton(
-        includeScript("www/readCookie.js")
+        includeScript("~/ShinyApps/CTF_shiny/www/readCookie.js")
       ),
       tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
     ),
