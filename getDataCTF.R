@@ -3,7 +3,7 @@ cat(file=stderr(), "reading data...", "\n")
 ### syndccutils functions 
 get_table_df <- function(table_id, cache = FALSE) {
   if (cache) {
-    viewcache_dir <- "data/viewcache"
+    viewcache_dir <- "~/ShinyApps/CTF_shiny/data/viewcache"
     if (!fs::dir_exists(viewcache_dir)) {
       fs::dir_create(viewcache_dir, recursive = TRUE)
     }
