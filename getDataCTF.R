@@ -104,7 +104,7 @@ plot_file_counts_by_annotationkey <- function(
 }
 
 # synapser::synLogin(sessiontoken=input$cookie)
-ctf_summary_df <- get_table_df("syn18951982", cache = TRUE) ## moved to ctf folder
+ctf_summary_df <- get_table_df("syn18956617", cache = TRUE) ## moved to ctf folder
 
 ctf_summary_df <- ctf_summary_df %>% 
   mutate_at(.vars = vars(dplyr::matches("(createdOn|modifiedOn)")),
