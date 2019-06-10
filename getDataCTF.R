@@ -29,78 +29,78 @@ get_table_df <- function(table_id, cache = FALSE) {
 }
 
 create_synapse_links <- function(
-    df, link_keys
+  df, link_keys
 ) {
-    base_url <- "https://www.synapse.org/#!Synapse:"
-    link_template <- glue::glue(
-        "<a href='{base}{{id}}' target='_blank'>{{target}}</a>",
-        base = base_url
-    )
-    link_keys %>%
-        walk2(names(.), function(id_key, target_key) {
-            target_col <- as.name(target_key)
-            id_col <- as.name(id_key)
-            df <<- df %>%
-                mutate(
-                    UQ(target_col) :=
-                        ifelse(!is.na(UQ(target_col)),
-                               glue::glue(
-                                   link_template,
-                                   id = UQ(id_col),
-                                   target = UQ(target_col)
-                               ),
-                               UQ(target_col))
-                )
-        })
-    df
+  base_url <- "https://www.synapse.org/#!Synapse:"
+  link_template <- glue::glue(
+    "<a href='{base}{{id}}' target='_blank'>{{target}}</a>",
+    base = base_url
+  )
+  link_keys %>%
+    walk2(names(.), function(id_key, target_key) {
+      target_col <- as.name(target_key)
+      id_col <- as.name(id_key)
+      df <<- df %>%
+        mutate(
+          UQ(target_col) :=
+            ifelse(!is.na(UQ(target_col)),
+                   glue::glue(
+                     link_template,
+                     id = UQ(id_col),
+                     target = UQ(target_col)
+                   ),
+                   UQ(target_col))
+        )
+    })
+  df
 }
 
 plot_file_counts_by_annotationkey <- function(
-    view_df, annotation_keys, replace_missing = "Not Annotated",
-    chart_height = NULL
+  view_df, annotation_keys, replace_missing = "Not Annotated",
+  chart_height = NULL
 ) {
-
-    chart <- annotation_keys %>%
-        map2(.y = names(.), function(annotation_prettykey, annotation_key) {
-            key_col <- as.name(annotation_key)
-            plot_df <- view_df %>%
-                group_by(.dots = annotation_key) %>%
-                tally() %>%
-                mutate_at(.vars = annotation_key,
-                                 funs(replace(., is.na(.), replace_missing))) %>%
-                mutate(UQ(key_col) := forcats::fct_relevel(
-                    UQ(key_col), replace_missing, after = 0L
-                )) %>%
-                mutate(label = glue::glue(
-                    "<b>{value}:</b>\n{count} files",
-                    value = UQ(key_col),
-                    count = n
-                ))
-
-            p <- plot_df %>%
-                ggplot(aes(x = 1, y = n, text = label)) +
-                geom_col(aes_(fill = as.name(annotation_key)),
-                                  position = position_stack(reverse = FALSE),
-                                  colour = "white", size = 0.2) +
-                scale_fill_viridis_d() +
-                xlab(annotation_prettykey) +
-                ylab("Number of Files") +
-                scale_x_continuous(expand = c(0, 0)) +
-                scale_y_continuous(expand = c(0, 0)) +
-                custom_theme_bw() +
-                theme(axis.text.x = element_blank(),
-                               axis.ticks.x = element_blank()) +
-                guides(fill = FALSE)
-
-            plotly::ggplotly(p, tooltip = "text",
-                     width = 100 * length(annotation_keys) + 50,
-                     height = chart_height)
-        }) %>%
-        plotly::subplot(shareY = TRUE, titleX = TRUE) %>%
-        plotly::layout(showlegend = FALSE,
-                       font = list(family = "Roboto, Open Sans, sans-serif")) %>%
-        plotly::config(displayModeBar = F)
-    chart
+  
+  chart <- annotation_keys %>%
+    map2(.y = names(.), function(annotation_prettykey, annotation_key) {
+      key_col <- as.name(annotation_key)
+      plot_df <- view_df %>%
+        group_by(.dots = annotation_key) %>%
+        tally() %>%
+        mutate_at(.vars = annotation_key,
+                  funs(replace(., is.na(.), replace_missing))) %>%
+        mutate(UQ(key_col) := forcats::fct_relevel(
+          UQ(key_col), replace_missing, after = 0L
+        )) %>%
+        mutate(label = glue::glue(
+          "<b>{value}:</b>\n{count} files",
+          value = UQ(key_col),
+          count = n
+        ))
+      
+      p <- plot_df %>%
+        ggplot(aes(x = 1, y = n, text = label)) +
+        geom_col(aes_(fill = as.name(annotation_key)),
+                 position = position_stack(reverse = FALSE),
+                 colour = "white", size = 0.2) +
+        scale_fill_viridis_d() +
+        xlab(annotation_prettykey) +
+        ylab("Number of Files") +
+        scale_x_continuous(expand = c(0, 0)) +
+        scale_y_continuous(expand = c(0, 0)) +
+        custom_theme_bw() +
+        theme(axis.text.x = element_blank(),
+              axis.ticks.x = element_blank()) +
+        guides(fill = FALSE)
+      
+      plotly::ggplotly(p, tooltip = "text",
+                       width = 100 * length(annotation_keys) + 50,
+                       height = chart_height)
+    }) %>%
+    plotly::subplot(shareY = TRUE, titleX = TRUE) %>%
+    plotly::layout(showlegend = FALSE,
+                   font = list(family = "Roboto, Open Sans, sans-serif")) %>%
+    plotly::config(displayModeBar = F)
+  chart
 }
 
 # synapser::synLogin(sessiontoken=input$cookie)
@@ -109,7 +109,7 @@ ctf_summary_df <- get_table_df("syn18951982", cache = TRUE) ## moved to ctf fold
 ctf_summary_df <- ctf_summary_df %>% 
   mutate_at(.vars = vars(dplyr::matches("(createdOn|modifiedOn)")),
             .funs = funs(lubridate::as_datetime(floor(. / 1000)))
-            ) %>%
+  ) %>%
   mutate(study = name_project)
 
 project_vars <- c("projectId", "name_project", "institutions", "fundingAgency",
@@ -177,8 +177,8 @@ label_wrap_gen3 <- function(width = 100) {
 
 p_ctf <- plot_ctf_df %>% 
   filter(.$avg_files >= 1) %>%
-  # mutate( consortium = gsub("cNF Initiative", "cNF", .$consortium)) %>%
-  # mutate(consortium = gsub("Francis Collins Scholars", "Collins", .$consortium)) %>%
+  mutate( consortium = gsub("cNF Initiative", "cNF", .$consortium)) %>%
+  mutate(consortium = gsub("Francis Collins Scholars", "Collins", .$consortium)) %>%
   ggplot(aes(x = name_project, y = avg_files)) +
   geom_col(aes(fill = avg_files, text = label), 
            colour = "slategray", size = 0.3, alpha = 1) +
