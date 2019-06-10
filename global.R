@@ -19,7 +19,7 @@ library(stringr)
 library(yaml)
 library(pier)
 
-config = yaml::yaml.load_file("configuration.yaml")
+config = yaml::yaml.load_file("~/ShinyApps/CTF_shiny/configuration.yaml")
 
 consortium_donut <- function(consortium_counts, key, key_label) {
   ctf_consortium_counts %>% 
